@@ -1,43 +1,36 @@
-import { Component } from "react";
-
+import { useEffect, useState } from "react";
 import "./style.css";
 
-class SearchWeather extends Component {
-  state = {
-    inputValue: "Curitiba",
-  };
+function SearchWeather ({ handleChangeWeather }) {
 
-  componentDidMount() {
-    this.handleSubmit();
-  }
+  const [inputValue, setInputValue] = useState("Curitiba");
 
-  handleSubmit = () => {
-    const { inputValue } = this.state;
-    const { handleChangeWeather } = this.props;
-
-    fetch(`https://goweather.herokuapp.com/weather/${this.state.inputValue}`)
+  function handleSubmit () {
+      fetch(`https://goweather.herokuapp.com/weather/${inputValue}`)
       .then((response) => response.json())
       .then((response) => handleChangeWeather(response, inputValue));
   };
 
-  render() {
+  useEffect ( () => {
+    handleSubmit()
+  }, [])
+
     return (
       <div className="search-container">
         <div>
           <input
             className="search-input"
-            value={this.state.inputValue}
-            onChange={(e) => this.setState({ inputValue: e.target.value })}
+            value={inputValue}
+            onChange={(e) => setInputValue( e.target.value )}
           />
         </div>
         <div>
-          <button className="search-button" onClick={this.handleSubmit}>
+          <button className="search-button" onClick={handleSubmit}>
             Search
           </button>
         </div>
       </div>
     );
-  }
 }
 
 export default SearchWeather;
